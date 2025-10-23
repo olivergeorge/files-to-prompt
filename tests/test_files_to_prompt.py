@@ -439,3 +439,50 @@ def test_markdown(tmpdir, option):
             "`````\n"
         )
         assert expected.strip() == actual.strip()
+
+
+def test_nonexistent_paths_are_skipped(tmpdir):
+    runner = CliRunner()
+    with tmpdir.as_cwd():
+        # Create one real file
+        with open("real_file.txt", "w") as f:
+            f.write("This file exists")
+        
+        # Test with mix of real and non-existent paths
+        result = runner.invoke(cli, ["/nonexistent/path.txt", "real_file.txt", "another_missing.txt"])
+        
+        # Should succeed despite missing files
+        assert result.exit_code == 0
+        
+        # Should include the real file
+        assert "real_file.txt" in result.output
+        assert "This file exists" in result.output
+        
+        # Should warn about missing files on stderr
+        assert "Warning: Skipping path /nonexistent/path.txt (does not exist)" in result.output
+        assert "Warning: Skipping path another_missing.txt (does not exist)" in result.output
+
+
+def test_nonexistent_paths_with_cxml(tmpdir):
+    runner = CliRunner()
+    with tmpdir.as_cwd():
+        # Create one real file
+        with open("real_file.txt", "w") as f:
+            f.write("This file exists")
+        
+        # Test with --cxml flag
+        result = runner.invoke(cli, ["--cxml", "/nonexistent/path.txt", "real_file.txt"])
+        
+        # Should succeed
+        assert result.exit_code == 0
+        
+        # Should have proper XML structure
+        assert "<documents>" in result.output
+        assert "</documents>" in result.output
+        
+        # Should include the real file
+        assert "<source>real_file.txt</source>" in result.output
+        assert "This file exists" in result.output
+        
+        # Should warn about missing file
+        assert "Warning: Skipping path /nonexistent/path.txt (does not exist)" in result.output

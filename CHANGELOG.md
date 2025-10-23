@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.2] - 2025-10-23
+
+### Changed
+- Non-existent paths are now skipped with a warning instead of causing an error
+- XML wrapper (`<documents>`) is now written before processing paths, ensuring valid output even when some paths don't exist
+
+### Fixed
+- Tool now tolerates references to files that don't exist in the filesystem, useful when piping from commands like `find`
+
 ## [0.6.1] - 2025-10-23
 
 ### Fixed

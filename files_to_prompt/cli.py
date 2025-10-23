@@ -186,7 +186,7 @@ def read_paths_from_stdin(use_null_separator):
 
 
 @click.command()
-@click.argument("paths", nargs=-1, type=click.Path(exists=True))
+@click.argument("paths", nargs=-1, type=click.Path(exists=False))
 @click.option("extensions", "-e", "--extension", multiple=True)
 @click.option(
     "--include-hidden",
@@ -308,13 +308,17 @@ def cli(
     if output_file:
         fp = open(output_file, "w", encoding="utf-8")
         writer = lambda s: print(s, file=fp)
+    
+    if claude_xml:
+        writer("<documents>")
+    
     for path in paths:
         if not os.path.exists(path):
-            raise click.BadArgumentUsage(f"Path does not exist: {path}")
+            warning_message = f"Warning: Skipping path {path} (does not exist)"
+            click.echo(click.style(warning_message, fg="red"), err=True)
+            continue
         if not ignore_gitignore:
             gitignore_rules.extend(read_gitignore(os.path.dirname(path)))
-        if claude_xml and path == paths[0]:
-            writer("<documents>")
         process_path(
             path,
             extensions,
@@ -328,6 +332,7 @@ def cli(
             markdown,
             line_numbers,
         )
+    
     if claude_xml:
         writer("</documents>")
     if fp:

@@ -8,7 +8,7 @@ exclude = ["tests*"]
 
 [project]
 name = "files-to-prompt"
-version = "0.6.1"
+version = "0.6.2"
 description = "Concatenate a directory full of files into a single prompt for use with LLMs"
 readme = "README.md"
 authors = [{name = "Simon Willison"}]
