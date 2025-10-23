@@ -258,10 +258,24 @@ python -m venv venv
 source venv/bin/activate
 ```
 
+Or if you have [uv](https://github.com/astral-sh/uv) installed:
+
+```bash
+cd files-to-prompt
+uv venv
+source .venv/bin/activate
+```
+
 Now install the dependencies and test dependencies:
 
 ```bash
 pip install -e '.[test]'
+```
+
+Or with uv:
+
+```bash
+uv pip install -e '.[test]'
 ```
 
 To run the tests:

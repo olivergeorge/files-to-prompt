@@ -1,6 +1,14 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["files_to_prompt*"]
+exclude = ["tests*"]
+
 [project]
 name = "files-to-prompt"
-version = "0.6"
+version = "0.6.1"
 description = "Concatenate a directory full of files into a single prompt for use with LLMs"
 readme = "README.md"
 authors = [{name = "Simon Willison"}]
