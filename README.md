@@ -191,6 +191,23 @@ You can mix and match paths from command line arguments and stdin:
 find . -mtime -1 | files-to-prompt README.md
 ```
 
+### Handling non-existent paths
+
+The tool gracefully handles references to files that don't exist. Instead of failing, it will skip them with a warning message to stderr:
+
+```bash
+files-to-prompt /path/that/does/not/exist real_file.txt
+# Warning: Skipping path /path/that/does/not/exist (does not exist)
+# ... continues with real_file.txt
+```
+
+This is particularly useful when piping from commands like `find`, where files might be deleted between discovery and processing:
+
+```bash
+# Won't fail if files are deleted during processing
+find . -name "*.tmp" | files-to-prompt
+```
+
 ### Claude XML Output
 
 Anthropic has provided [specific guidelines](https://docs.anthropic.com/claude/docs/long-context-window-tips) for optimally structuring prompts to take advantage of Claude's extended context window.
